@@ -1,5 +1,7 @@
 import Search from './models/Search';
+import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
 import { elements, spinner, clearSpinner } from './views/base';
 
 /** Global state
@@ -10,7 +12,9 @@ import { elements, spinner, clearSpinner } from './views/base';
  */
 const state = {};
 
-// Form submit
+/**
+ * Search controller
+ */
 const onSearchSubmit = async () => {
   // Get the query from the view
   const query = searchView.getInput();
@@ -24,12 +28,17 @@ const onSearchSubmit = async () => {
     searchView.clearResults();
     spinner(elements.searchResults);
 
-    // Search for the recipes
-    await state.search.getResults();
+    try {
+      // Search for the recipes
+      await state.search.getResults();
 
-    // Render the results
-    clearSpinner();
-    searchView.renderResults(state.search.result);
+      // Render the results
+      clearSpinner();
+      searchView.renderResults(state.search.result);
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong... Please try again.');
+    }
   }
 };
 
@@ -46,3 +55,40 @@ elements.resultsPages.addEventListener('click', e => {
     searchView.renderResults(state.search.result, goToPage);
   }
 });
+
+/**
+ * Recipe controller
+ */
+const controlRecipe = async () => {
+  // Get the id from the URL
+  const id = window.location.hash.replace('#', '');
+
+  if (id) {
+    // Prepare the UI for changes
+    recipeView.clearRecipe();
+    spinner(elements.recipe);
+
+    // Create a new recipe object
+    state.recipe = new Recipe(id);
+
+    try {
+      // Get the recipe data and parse the ingredients
+      await state.recipe.getRecipe();
+      state.recipe.parseIngredients();
+
+      // Call the calculation methods
+      state.recipe.calcTime();
+      state.recipe.calcServings();
+
+      // Render the recipe
+      clearSpinner();
+      recipeView.renderRecipe(state.recipe);
+    } catch (err) {
+      console.error(err);
+      clearSpinner();
+      alert('Something went wrong... Please try again.');
+    }
+  }
+};
+
+['hashchange', 'load'].forEach(e => window.addEventListener(e, controlRecipe));
