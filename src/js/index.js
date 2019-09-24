@@ -14,7 +14,6 @@ const state = {};
 const onSearchSubmit = async () => {
   // Get the query from the view
   const query = searchView.getInput();
-  console.log(query);
 
   if (query) {
     // New search object and add it to the state
@@ -37,4 +36,13 @@ const onSearchSubmit = async () => {
 elements.searchForm.addEventListener('submit', e => {
   e.preventDefault();
   onSearchSubmit();
+});
+
+elements.resultsPages.addEventListener('click', e => {
+  const btn = e.target.closest('.btn-inline');
+  if (btn) {
+    const goToPage = parseInt(btn.dataset.goto, 10);
+    searchView.clearResults();
+    searchView.renderResults(state.search.result, goToPage);
+  }
 });
