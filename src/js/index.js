@@ -68,6 +68,9 @@ const controlRecipe = async () => {
     recipeView.clearRecipe();
     spinner(elements.recipe);
 
+    // Highlight the selected recipe
+    if (state.search) searchView.highlightSelected(id);
+
     // Create a new recipe object
     state.recipe = new Recipe(id);
 
