@@ -9,6 +9,20 @@ export const clearResults = () => {
   elements.resultsPages.innerHTML = '';
 };
 
+export const highlightSelected = id => {
+  /* Removing the highlight from the previously selected recipe
+   * before adding it to the new one
+   */
+  const resultsArray = Array.from(document.querySelectorAll('.results__link'));
+  resultsArray.forEach(highlighted => {
+    highlighted.classList.remove('results__link--active');
+  });
+
+  document
+    .querySelector(`a[href="#${id}"]`)
+    .classList.add('results__link--active');
+};
+
 const shortenTitle = (title, limit = 17) => {
   const newTitle = [];
 
