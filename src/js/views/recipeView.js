@@ -1,7 +1,31 @@
 import { elements } from './base';
+import Fraction from 'fraction.js';
 
 export const clearRecipe = () => {
   elements.recipe.innerHTML = '';
+};
+
+const formatAmount = amount => {
+  if (amount) {
+    // amount = 2.5 --> 2 1/2
+    // amount = 0.5 --> 1/2
+    const [int, dec] = amount
+      .toString()
+      .split('.')
+      .map(number => parseInt(number, 10));
+
+    if (!dec) return amount;
+
+    if (int === 0) {
+      const fr = new Fraction(amount);
+      return `${fr.n}/${fr.d}`;
+    } else {
+      const fr = new Fraction(amount - int);
+      return `${int} ${fr.n}/${fr.d}`;
+    }
+  }
+
+  return '?';
 };
 
 const createIngredient = ingredient => `
@@ -9,7 +33,7 @@ const createIngredient = ingredient => `
     <svg class="recipe__icon">
       <use href="img/icons.svg#icon-check"></use>
     </svg>
-    <div class="recipe__count">${ingredient.amount}</div>
+    <div class="recipe__count">${formatAmount(ingredient.amount)}</div>
     <div class="recipe__ingredient">
       <span class="recipe__unit">${ingredient.unit}</span>
         ${ingredient.ingredient}
