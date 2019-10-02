@@ -24,6 +24,7 @@
     "@babel/polyfill": "^7.6.0",
     "axios": "^0.19.0",
     "core-js": "^3.2.1",
-    "fraction.js": "^4.0.12"
+    "fraction.js": "^4.0.12",
+    "uniqid": "^5.0.3"
   }
 }
