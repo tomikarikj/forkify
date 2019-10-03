@@ -1,7 +1,9 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
+import ShoppingList from './models/ShoppingList';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
+import * as shoppingListView from './views/shoppingListView';
 import { elements, spinner, clearSpinner } from './views/base';
 
 /** Global state
@@ -96,6 +98,36 @@ const controlRecipe = async () => {
 
 ['hashchange', 'load'].forEach(e => window.addEventListener(e, controlRecipe));
 
+/**
+ * Shopping list controller
+ */
+const controlShoppingList = async () => {
+  // Create a new list if there is none
+  if (!state.shoppingList) state.shoppingList = new ShoppingList();
+
+  // Add each ingredient to the list
+  state.recipe.ingredients.forEach(el => {
+    const item = state.shoppingList.addItem(el.amount, el.unit, el.ingredient);
+    shoppingListView.renderItem(item);
+  });
+};
+
+// The shopping list delete and update buttons event listeners
+elements.shoppingList.addEventListener('click', e => {
+  const id = e.target.closest('.shopping__item').dataset.itemid;
+
+  // Delete button and updating the amount
+  if (e.target.matches('.shopping__delete, .shopping__delete *')) {
+    // Delete from the state
+    state.shoppingList.deleteItem(id);
+    // Delete from the UI
+    shoppingListView.deleteItem(id);
+  } else if (e.target.matches('.shopping__amount-value')) {
+    const value = parseFloat(e.target.value, 10);
+    state.shoppingList.updateAmount(id, value);
+  }
+});
+
 // Recipe buttons event listeners
 elements.recipe.addEventListener('click', e => {
   if (e.target.matches('.btn-decrease, .btn-decrease *')) {
@@ -108,5 +140,7 @@ elements.recipe.addEventListener('click', e => {
     // Increase button is clicked
     state.recipe.updateServings('inc');
     recipeView.updateServingsIngredients(state.recipe);
+  } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
+    controlShoppingList();
   }
 });
