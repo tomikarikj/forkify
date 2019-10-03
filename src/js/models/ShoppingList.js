@@ -12,8 +12,8 @@ export default class ShoppingList {
       unit,
       ingr
     };
-
     this.items.push(item);
+    return item;
   }
 
   deleteItem(id) {
