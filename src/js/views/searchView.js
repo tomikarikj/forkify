@@ -19,11 +19,11 @@ export const highlightSelected = id => {
   });
 
   document
-    .querySelector(`a[href="#${id}"]`)
+    .querySelector(`.results__link[href="#${id}"]`)
     .classList.add('results__link--active');
 };
 
-const shortenTitle = (title, limit = 17) => {
+export const shortenTitle = (title, limit = 17) => {
   const newTitle = [];
 
   if (title.length > limit) {
