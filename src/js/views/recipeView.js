@@ -9,18 +9,19 @@ const formatAmount = amount => {
   if (amount) {
     // amount = 2.5 --> 2 1/2
     // amount = 0.5 --> 1/2
-    const [int, dec] = amount
+    const newAmount = Math.round(amount * 10000) / 10000;
+    const [int, dec] = newAmount
       .toString()
       .split('.')
       .map(number => parseInt(number, 10));
 
-    if (!dec) return amount;
+    if (!dec) return newAmount;
 
     if (int === 0) {
-      const fr = new Fraction(amount);
+      const fr = new Fraction(newAmount);
       return `${fr.n}/${fr.d}`;
     } else {
-      const fr = new Fraction(amount - int);
+      const fr = new Fraction(newAmount - int);
       return `${int} ${fr.n}/${fr.d}`;
     }
   }
