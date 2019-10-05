@@ -89,7 +89,7 @@ const controlRecipe = async () => {
 
       // Render the recipe
       clearSpinner();
-      recipeView.renderRecipe(state.recipe); // TODO: add this state.likes.isLiked(id)
+      recipeView.renderRecipe(state.recipe, state.likes.isLiked(id));
     } catch (err) {
       console.error(err);
       clearSpinner();
@@ -159,6 +159,17 @@ const controlLike = () => {
 
   likesView.toggleLikeMenu(state.likes.getNumOfLikes());
 };
+
+// Restore the liked recipes on page load
+window.addEventListener('load', () => {
+  state.likes = new Like();
+  state.likes.readStorage();
+
+  // Toggle the like menu button
+  likesView.toggleLikeMenu(state.likes.getNumOfLikes());
+  // Render the liked recipes
+  state.likes.likes.forEach(like => likesView.renderLikedRecipes(like));
+});
 
 // Recipe buttons event listeners
 elements.recipe.addEventListener('click', e => {
